@@ -19,29 +19,42 @@ class ServiceCallbacks(Service):
         # TODO: Resource Manager for pw-id
 
         # 创建服务的第二步，读取yang里面的值
+        pw_id = service.pw_id
 
         endpoint1 = service.endpoint1
         endpoint2 = service.endpoint2
-        for device in endpoint1:
-            interface = device.interface
-            lb_ip = getIpAddress(device.loopback-ip)
-            pw_id = device.pw-id
-            # 开始配置设备
-            vars = ncs.template.Variables()
-            vars.add("DEVICE_NAME",device.name)
-            vars.add("INTF_NUMBER",device.interface)
-            vars.add("L2VPN_NAME",device.name)
-            vars.add("P2P_NAME",device.name)
-            vars.add("PEER_LOOPBACK",device.name)
-            vars.add("PWID",device.pw-id)
+        interface1 = endpoint1.interface
+        lb_ip1 = getIpAddress(endpoint1.loopback_ip)
+        interface2 = endpoint2.interface
+        lb_ip2 = getIpAddress(endpoint2.loopback_ip)
+        # 开始配置设备
+
+        vars = ncs.template.Variables()
+        vars.add("DEVICE_NAME",endpoint1.name)
+        vars.add("INTF_NUMBER",interface1)
+        vars.add("L2VPN_NAME",service.name)
+        vars.add("P2P_NAME",endpoint1.name+"_to_"+endpoint2.name)
+        vars.add("PEER_LOOPBACK",lb_ip2)
+        vars.add("PWID",pw_id)
+
+        vars2 = ncs.template.Variables()
+        vars2.add("DEVICE_NAME", endpoint2.name)
+        vars2.add("INTF_NUMBER", interface2)
+        vars2.add("L2VPN_NAME", service.name)
+        vars2.add("P2P_NAME", endpoint1.name + "_to_" + endpoint2.name)
+        vars2.add("PEER_LOOPBACK", lb_ip1)
+        vars2.add("PWID", pw_id)
+
         template = ncs.template.Template(service)
         template.apply('l2vpn-iosxr', vars)
 
+        template2 = ncs.template.Template(service)
+        template2.apply('l2vpn-iosxr', vars2)
 
-        vars = ncs.template.Variables()
-        vars.add('DUMMY', '127.0.0.1')
-        template = ncs.template.Template(service)
-        template.apply('l2vpn-template', vars)
+        # vars = ncs.template.Variables()
+        # vars.add('DUMMY', '127.0.0.1')
+        # template = ncs.template.Template(service)
+        # template.apply('l2vpn-template', vars)
 
     # The pre_modification() and post_modification() callbacks are optional,
     # and are invoked outside FASTMAP. pre_modification() is invoked before
