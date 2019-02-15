@@ -1,0 +1,33 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+    <devices xmlns="http://tail-f.com/ns/ncs">
+        <device>
+            <name>{$DEVICE_NAME}</name>
+            <config>
+                <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+                    <GigabitEthernet>
+                        <id>{$INTF_NUMBER}</id>
+                        <l2transport/>
+                    </GigabitEthernet>
+                </interface>
+                <l2vpn xmlns="http://tail-f.com/ned/cisco-ios-xr">
+                    <xconnect>
+                        <group>
+                            <name>{$L2VPN_NAME}</name>
+                            <p2p>
+                                <name>{$P2P_NAME}</name>
+                                <interface>
+                                    <name>GigabitEthernet{$INTF_NUMBER}</name>
+                                </interface>
+                                <neighbor>
+                                    <address>{$PEER_LOOPBACK}</address>
+                                    <pw-id>{$PWID}</pw-id>
+                                    <ip-version>ipv4</ip-version>
+                                </neighbor>
+                            </p2p>
+                        </group>
+                    </xconnect>
+                </l2vpn>
+            </config>
+        </device>
+    </devices>
+</config-template>
