@@ -15,6 +15,17 @@ def get_device_type(device):
     except:
         return None
 
+def check_pwid(name,pw_id,services):
+    # TODO: Check if device pw-id is occupied
+    for service in services:
+        if service.name == name:
+            continue
+        if service.pw_id==pw_id:
+            return False
+    return True
+
+
+
 
 # ------------------------
 # SERVICE CALLBACK EXAMPLE
@@ -27,10 +38,16 @@ class ServiceCallbacks(Service):
     def cb_create(self, tctx, root, service, proplist):
         self.log.info('Service create(service=', service._path, ')')
 
-        # TODO: Add auto fill for loopback ip
-        # TODO: Resource Manager for pw-id
+        # TODO: Add auto fill for loopback ip (Optional)
+
+        # TODO: Resource Manager for pw-id (device perspective / advanced)
+
+        # TODO: PW-ID must unique. (service perspective / intermediate)
 
         pw_id = service.pw_id
+
+        if not check_pwid(service.name,pw_id, root.l2vpn):
+            raise Exception("PW-ID already used.")
 
         endpoint1 = service.endpoint1
         # self.log.info(root.devices.device[endpoint1.name])
