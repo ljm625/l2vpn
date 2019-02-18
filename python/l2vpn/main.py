@@ -3,6 +3,12 @@ import ncs
 from ncs.application import Service
 
 
+def getIpAddress(addr):
+    """Return the Ip part of a 'Ip/Net' string."""
+    parts = addr.split('/')
+    return parts[0]
+
+
 # ------------------------
 # SERVICE CALLBACK EXAMPLE
 # ------------------------
@@ -13,12 +19,10 @@ class ServiceCallbacks(Service):
     @Service.create
     def cb_create(self, tctx, root, service, proplist):
         self.log.info('Service create(service=', service._path, ')')
-        # 创建服务的第一步，检查输入是否有效/Valid
 
         # TODO: Add auto fill for loopback ip
         # TODO: Resource Manager for pw-id
 
-        # 创建服务的第二步，读取yang里面的值
         pw_id = service.pw_id
 
         endpoint1 = service.endpoint1
@@ -27,7 +31,6 @@ class ServiceCallbacks(Service):
         lb_ip1 = getIpAddress(endpoint1.loopback_ip)
         interface2 = endpoint2.interface
         lb_ip2 = getIpAddress(endpoint2.loopback_ip)
-        # 开始配置设备
 
         vars = ncs.template.Variables()
         vars.add("DEVICE_NAME",endpoint1.name)

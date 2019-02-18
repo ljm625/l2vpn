@@ -34,58 +34,37 @@ module l2vpn {
     uses ncs:service-data;
     ncs:servicepoint l2vpn-servicepoint;
 
-    // may replace this with other ways of refering to the devices.
-    leaf-list device {
-      type leafref {
-        path "/ncs:devices/ncs:device/ncs:name";
+    container endpoint1 {
+      leaf name {
+        type leafref{
+          path "/ncs:devices/ncs:device/ncs:name";
+        }
+      }
+      leaf interface {
+        type string;
+      }
+      leaf loopback-ip {
+        type inet:ipv4-address;
       }
     }
 
-    container endpoint1 (
-      list device{
-        description "Device name";
-        key name;
-        leaf name {
-          type leafref{
-            path "/ncs:devices/ncs:device/ncs:name";
-          }
-        }
-        leaf interface {
-          type string;
-        }
-        leaf loopback-ip {
-          type inet:ipv4-address;
-        }
-        leaf pw-id {
-          type uint8;
-        }
-        
-      } 
-    }
 
-    container endpoint2 (
-      list device{
-        description "Device name";
-        key name;
-        leaf name {
-          type leafref{
-            path "/ncs:devices/ncs:device/ncs:name";
-          }
+    container endpoint2 {
+      leaf name {
+        type leafref{
+          path "/ncs:devices/ncs:device/ncs:name";
         }
-        leaf interface {
-          type string;
-        }
-        leaf loopback-ip {
-          type inet:ipv4-address;
-        }
-        leaf pw-id {
-          type uint8;
-        }
-        
-      } 
+      }
+      leaf interface {
+        type string;
+      }
+      leaf loopback_ip {
+        type inet:ipv4-address;
+      }
     }
-    // replace with your own stuff here
-    leaf dummy {
+    
+    leaf pw-id {
+        type uint8;
     }
   }
 }
