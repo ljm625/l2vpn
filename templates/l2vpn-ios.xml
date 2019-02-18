@@ -1,0 +1,19 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+    <devices xmlns="http://tail-f.com/ns/ncs">
+        <device>
+            <name>{$DEVICE_NAME}</name>
+            <config>
+                <interface xmlns="urn:ios">
+                    <GigabitEthernet>
+                        <name>{$INTF_NUMBER}</name>
+                        <xconnect>
+                            <address>{$PEER_LOOPBACK}</address>
+                            <vcid>{$PWID}</vcid>
+                            <encapsulation>mpls</encapsulation>
+                        </xconnect>
+                    </GigabitEthernet>
+                </interface>
+            </config>
+        </device>
+    </devices>
+</config-template>

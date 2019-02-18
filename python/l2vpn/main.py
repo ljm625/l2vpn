@@ -8,6 +8,13 @@ def getIpAddress(addr):
     parts = addr.split('/')
     return parts[0]
 
+def get_device_type(device):
+    # /devices/device[name='CE0']/device-type/cli/ned-id cisco-ios
+    try:
+        return str(device.__getitem__("device-type").cli.ned_id).split(":")[1]
+    except:
+        return None
+
 
 # ------------------------
 # SERVICE CALLBACK EXAMPLE
@@ -26,6 +33,12 @@ class ServiceCallbacks(Service):
         pw_id = service.pw_id
 
         endpoint1 = service.endpoint1
+        # self.log.info(root.devices.device[endpoint1.name])
+        # self.log.info("==============================")
+        #
+        # self.log.info(root.devices.device[endpoint1.name].__getitem__("device-type").cli.ned_id)
+
+        self.log.info(get_device_type(root.devices.device[endpoint1.name]))
         endpoint2 = service.endpoint2
         interface1 = endpoint1.interface
         lb_ip1 = getIpAddress(endpoint1.loopback_ip)
@@ -48,11 +61,24 @@ class ServiceCallbacks(Service):
         vars2.add("PEER_LOOPBACK", lb_ip1)
         vars2.add("PWID", pw_id)
 
+        device1_type = get_device_type(root.devices.device[endpoint1.name])
+        device2_type = get_device_type(root.devices.device[endpoint2.name])
         template = ncs.template.Template(service)
-        template.apply('l2vpn-iosxr', vars)
-
         template2 = ncs.template.Template(service)
-        template2.apply('l2vpn-iosxr', vars2)
+
+        if device1_type and device1_type=='cisco-ios-xr':
+            template.apply('l2vpn-iosxr', vars)
+        elif device1_type and device1_type=='cisco-ios':
+            template.apply('l2vpn-ios', vars)
+        else:
+            raise Exception("Unsupported device found :{}".format(endpoint1.name))
+
+        if device2_type and device2_type=='cisco-ios-xr':
+            template2.apply('l2vpn-iosxr', vars2)
+        elif device2_type and device2_type=='cisco-ios':
+            template2.apply('l2vpn-ios', vars2)
+        else:
+            raise Exception("Unsupported device found :{}".format(endpoint2.name))
 
         # vars = ncs.template.Variables()
         # vars.add('DUMMY', '127.0.0.1')
