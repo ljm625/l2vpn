@@ -6,6 +6,8 @@
                 <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
                     <GigabitEthernet>
                         <id>{$INTF_NUMBER}</id>
+                        <shutdown xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"
+                                 tags="delete"/>
                         <l2transport/>
                     </GigabitEthernet>
                 </interface>

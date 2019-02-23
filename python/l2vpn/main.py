@@ -2,12 +2,6 @@
 import ncs
 from ncs.application import Service
 
-
-def getIpAddress(addr):
-    """Return the Ip part of a 'Ip/Net' string."""
-    parts = addr.split('/')
-    return parts[0]
-
 def get_device_type(device):
     # /devices/device[name='CE0']/device-type/cli/ned-id cisco-ios
     try:
@@ -49,18 +43,22 @@ class ServiceCallbacks(Service):
         if not check_pwid(service.name,pw_id, root.l2vpn):
             raise Exception("PW-ID already used.")
 
-        endpoint1 = service.endpoint1
+
+
         # self.log.info(root.devices.device[endpoint1.name])
         # self.log.info("==============================")
         #
         # self.log.info(root.devices.device[endpoint1.name].__getitem__("device-type").cli.ned_id)
 
         self.log.info(get_device_type(root.devices.device[endpoint1.name]))
+        # Get Container Endpoint 1 & Endpoint 2 
+        endpoint1 = service.endpoint1
         endpoint2 = service.endpoint2
-        interface1 = endpoint1.interface
-        lb_ip1 = getIpAddress(endpoint1.loopback_ip)
-        interface2 = endpoint2.interface
-        lb_ip2 = getIpAddress(endpoint2.loopback_ip)
+        # Get interface & loopback_ip under Endpoint
+        interface1 = endpoint1.interface.GigabitEthernet
+        lb_ip1 = endpoint1.loopback_ip
+        interface2 = endpoint2.interface.GigabitEthernet
+        lb_ip2 = endpoint2.loopback_ip
 
         vars = ncs.template.Variables()
         vars.add("DEVICE_NAME",endpoint1.name)

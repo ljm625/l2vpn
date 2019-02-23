@@ -6,6 +6,8 @@
                 <interface xmlns="urn:ios">
                     <GigabitEthernet>
                         <name>{$INTF_NUMBER}</name>
+                        <shutdown xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"
+                                 tags="delete"/>
                         <xconnect>
                             <address>{$PEER_LOOPBACK}</address>
                             <vcid>{$PWID}</vcid>

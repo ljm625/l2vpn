@@ -35,13 +35,16 @@ module l2vpn {
     ncs:servicepoint l2vpn-servicepoint;
 
     container endpoint1 {
-      leaf name {
+      leaf device {
         type leafref{
           path "/ncs:devices/ncs:device/ncs:name";
         }
       }
-      leaf interface {
-        type string;
+      container interface {
+        leaf GigabitEthernet {
+            type string;
+          }
+        }
       }
       leaf loopback-ip {
         type inet:ipv4-address;
@@ -50,13 +53,16 @@ module l2vpn {
 
 
     container endpoint2 {
-      leaf name {
+      leaf device {
         type leafref{
           path "/ncs:devices/ncs:device/ncs:name";
         }
       }
-      leaf interface {
-        type string;
+      container interface {
+        leaf GigabitEthernet {
+            type string;
+          }
+        }
       }
       leaf loopback_ip {
         type inet:ipv4-address;
