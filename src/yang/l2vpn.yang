@@ -43,7 +43,6 @@ module l2vpn {
       container interface {
         leaf GigabitEthernet {
             type string;
-          }
         }
       }
       leaf loopback-ip {
