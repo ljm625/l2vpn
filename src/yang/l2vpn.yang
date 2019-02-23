@@ -23,7 +23,6 @@ module l2vpn {
 
   list l2vpn {
     description "This is an RFS skeleton service";
-
     key name;
     leaf name {
       tailf:info "Unique service id";
@@ -60,7 +59,6 @@ module l2vpn {
       container interface {
         leaf GigabitEthernet {
             type string;
-          }
         }
       }
       leaf loopback_ip {
@@ -73,3 +71,4 @@ module l2vpn {
     }
   }
 }
+
