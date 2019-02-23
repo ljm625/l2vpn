@@ -42,15 +42,6 @@ class ServiceCallbacks(Service):
 
         if not check_pwid(service.name,pw_id, root.l2vpn):
             raise Exception("PW-ID already used.")
-
-
-
-        # self.log.info(root.devices.device[endpoint1.name])
-        # self.log.info("==============================")
-        #
-        # self.log.info(root.devices.device[endpoint1.name].__getitem__("device-type").cli.ned_id)
-
-        self.log.info(get_device_type(root.devices.device[endpoint1.name]))
         # Get Container Endpoint 1 & Endpoint 2 
         endpoint1 = service.endpoint1
         endpoint2 = service.endpoint2
@@ -61,23 +52,23 @@ class ServiceCallbacks(Service):
         lb_ip2 = endpoint2.loopback_ip
 
         vars = ncs.template.Variables()
-        vars.add("DEVICE_NAME",endpoint1.name)
+        vars.add("DEVICE_NAME",endpoint1.device)
         vars.add("INTF_NUMBER",interface1)
         vars.add("L2VPN_NAME",service.name)
-        vars.add("P2P_NAME",endpoint1.name+"_to_"+endpoint2.name)
+        vars.add("P2P_NAME",endpoint1.device+"_to_"+endpoint2.device)
         vars.add("PEER_LOOPBACK",lb_ip2)
         vars.add("PWID",pw_id)
 
         vars2 = ncs.template.Variables()
-        vars2.add("DEVICE_NAME", endpoint2.name)
+        vars2.add("DEVICE_NAME", endpoint2.device)
         vars2.add("INTF_NUMBER", interface2)
         vars2.add("L2VPN_NAME", service.name)
-        vars2.add("P2P_NAME", endpoint1.name + "_to_" + endpoint2.name)
+        vars2.add("P2P_NAME", endpoint1.device + "_to_" + endpoint2.device)
         vars2.add("PEER_LOOPBACK", lb_ip1)
         vars2.add("PWID", pw_id)
 
-        device1_type = get_device_type(root.devices.device[endpoint1.name])
-        device2_type = get_device_type(root.devices.device[endpoint2.name])
+        device1_type = get_device_type(root.devices.device[endpoint1.device])
+        device2_type = get_device_type(root.devices.device[endpoint2.device])
         template = ncs.template.Template(service)
         template2 = ncs.template.Template(service)
 
@@ -86,14 +77,14 @@ class ServiceCallbacks(Service):
         elif device1_type and device1_type=='cisco-ios':
             template.apply('l2vpn-ios', vars)
         else:
-            raise Exception("Unsupported device found :{}".format(endpoint1.name))
+            raise Exception("Unsupported device found :{}".format(endpoint1.device))
 
         if device2_type and device2_type=='cisco-ios-xr':
             template2.apply('l2vpn-iosxr', vars2)
         elif device2_type and device2_type=='cisco-ios':
             template2.apply('l2vpn-ios', vars2)
         else:
-            raise Exception("Unsupported device found :{}".format(endpoint2.name))
+            raise Exception("Unsupported device found :{}".format(endpoint2.device))
 
         # vars = ncs.template.Variables()
         # vars.add('DUMMY', '127.0.0.1')
