@@ -5,7 +5,15 @@ from ncs.application import Service
 def get_device_type(device):
     # /devices/device[name='CE0']/device-type/cli/ned-id cisco-ios
     try:
-        return str(device.__getitem__("device-type").cli.ned_id).split(":")[1]
+
+        device_type = str(device.__getitem__("device-type").cli.ned_id)
+        if device_type.startswith("cisco-ios-xr"):
+            return "cisco-ios-xr"
+        elif device_type.startswith("cisco-ios"):
+            return "cisco-ios"
+        else:
+            return None
+
     except:
         return None
 
